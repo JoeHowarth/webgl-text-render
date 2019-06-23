@@ -9,6 +9,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@types/webgl2": "0.0.4",
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
@@ -16,6 +17,8 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@babylonjs/core": "^4.0.3",
+    "@babylonjs/materials": "^4.0.3",
     "@types/jest": "^23.1.4",
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-plugin-eslint": "^3.8.0",
