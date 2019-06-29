@@ -11,7 +11,8 @@ import {Mesh} from "@babylonjs/core/Meshes/mesh"
 import {CellMaterial} from "@babylonjs/materials/cell"
 // Required side effects to populate the Create methods on the mesh class. Without this, the bundle would be smaller but the createXXX methods from mesh would not be accessible.
 import "@babylonjs/core/Meshes/meshBuilder"
-import simple_shader from "@/simple_shader"
+import {drawText} from "@/text"
+import {drawString} from "@/sdf"
 
 function main() {
   // Get the canvas element from the DOM.
@@ -21,7 +22,7 @@ function main() {
   
   const engine = new Engine(canvas)
   let scene = new Scene(engine)
-  const camera = new FreeCamera("camera1", new Vector3(0, 5, -10), scene)
+  const camera = new FreeCamera("camera1", new Vector3(3, 5, -20), scene)
   
   camera.setTarget(Vector3.Zero())
   camera.attachControl(canvas, true)
@@ -39,6 +40,10 @@ function main() {
   const ground = Mesh.CreateGround("ground1", 6, 6, 2, scene)
   ground.material = material
   
+  // let text1 = drawText("hi", scene)
+  // text1.sca
+  let mesh = drawString("a", scene)
+  mesh.position = Vector3.One()
   
   engine.runRenderLoop(() => {
     // shaderMaterial.setMatrix("matrix", sphere.getWorldMatrix())
