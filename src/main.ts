@@ -22,7 +22,7 @@ function main() {
   
   const engine = new Engine(canvas)
   let scene = new Scene(engine)
-  const camera = new FreeCamera("camera1", new Vector3(3, 5, -10), scene)
+  const camera = new FreeCamera("camera1", new Vector3(3, 5, -20), scene)
   
   camera.setTarget(new Vector3(2, 1, 0))
   camera.attachControl(canvas, true)
@@ -42,9 +42,9 @@ function main() {
   
   // let text1 = drawText("hi", scene)
   // text1.sca
-  // let mesh = drawString("This is my text!!, isn't it awesomely clippy?!?!", scene)
-  let mesh = drawString("ab c", scene)
-  mesh.position = Vector3.One()
+  let mesh = drawString("This is my text!!, isn't it awesomely clippy?!?!", scene)
+  // let mesh = drawString("ab c", scene)
+  mesh.position = new Vector3(-5, 1, 0)
   
   engine.runRenderLoop(() => {
     // shaderMaterial.setMatrix("matrix", sphere.getWorldMatrix())

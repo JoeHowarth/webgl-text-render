@@ -1,4 +1,4 @@
-import {Engine, Mesh, RawTexture, Scene, ShaderMaterial, Texture, VertexData} from "@babylonjs/core"
+import {Engine, Mesh, RawTexture, Scene, ShaderMaterial, Texture, Vector3, VertexData} from "@babylonjs/core"
 import font from "./sdfFont"
 import {backgroundVertexDeclaration} from "@babylonjs/core/Shaders/ShadersInclude/backgroundVertexDeclaration"
 
@@ -10,6 +10,7 @@ export function drawString(text: string, scene: Scene): Mesh {
   let vertexData = makeVerticesForString(text)
   // let vertexData = getVertexData(text)
   vertexData.applyToMesh(mesh)
+  mesh.scaling = new Vector3(0.3, 0.3, 0.3)
   console.log(vertexData)
   console.log(mesh)
   
@@ -45,49 +46,50 @@ function makeVerticesForString(s: string) {
   for (let ii = 0; ii < len; ++ii) {
     const letter = s[ii]
     // @ts-ignore
-    const glyphInfo = <CharacterInfo>font.characters[letter]
-    console.log(glyphInfo)
-    if (glyphInfo) {
-      const x2 = x + glyphInfo.width
-      const u1 = glyphInfo.x / font.width
-      const v1 = (glyphInfo.y + glyphInfo.height) / font.height
-      const u2 = (glyphInfo.x + glyphInfo.width) / font.width
-      const v2 = glyphInfo.y / font.height
-      console.log(x, x2, glyphInfo.height)
+    const c = <CharacterInfo>font.characters[letter]
+    console.log(c)
+    if (c) {
+      const x2 = x + c.width - c.originX
+      const y = c.originY
+      const u1 = c.x / font.width
+      const v1 = (c.y + c.height) / font.height
+      const u2 = (c.x + c.width) / font.width
+      const v2 = c.y / font.height
+      console.log(x, x2, c.height)
       console.log(u1,v1, u2, v2)
       
       // 6 vertices per letter
       positions[offset] = x;
-      positions[offset + 1] = 0;
+      positions[offset + 1] = y - c.height;
       texcoords[offset] = u1;
       texcoords[offset + 1] = v1;
       
       positions[offset + 2] = x2;
-      positions[offset + 3] = 0;
+      positions[offset + 3] = y - c.height;
       texcoords[offset + 2] = u2;
       texcoords[offset + 3] = v1;
       
       positions[offset + 4] = x;
-      positions[offset + 5] = glyphInfo.height;
+      positions[offset + 5] = y
       texcoords[offset + 4] = u1;
       texcoords[offset + 5] = v2;
       
       positions[offset + 6] = x;
-      positions[offset + 7] = glyphInfo.height;
+      positions[offset + 7] = y
       texcoords[offset + 6] = u1;
       texcoords[offset + 7] = v2;
       
       positions[offset + 8] = x2;
-      positions[offset + 9] = 0;
+      positions[offset + 9] = y - c.height;
       texcoords[offset + 8] = u2;
       texcoords[offset + 9] = v1;
       
       positions[offset + 10] = x2;
-      positions[offset + 11] = glyphInfo.height
+      positions[offset + 11] = y
       texcoords[offset + 10] = u2;
       texcoords[offset + 11] = v2;
       
-      x += glyphInfo.advance;
+      x += c.advance;
       offset += 12;
     } else {
       // we don't have this character so just advance
@@ -99,8 +101,8 @@ function makeVerticesForString(s: string) {
   const pos = new Float32Array(numVertices * 3)
   const indices = new Uint16Array(numVertices)
   for (let i = 0; i < numVertices; i++) {
-    pos[i*3] = positions[i*2]      / font.characters['a'].width
-    pos[i*3+1] = positions[i*2+1]  / font.characters['a'].width
+    pos[i*3] = positions[i*2]
+    pos[i*3+1] = positions[i*2+1]
     pos[i*3+2] = 0
     indices[i] = i
   }
@@ -113,6 +115,7 @@ function makeVerticesForString(s: string) {
 function initShader(scene: Scene): ShaderMaterial {
   let mat = new ShaderMaterial("sdf", scene, "./sdf",
       {
+        needAlphaBlending: true,
         attributes: ["position", "uv"],
         uniforms: ["worldViewProjection", "u_texture"]
       })
