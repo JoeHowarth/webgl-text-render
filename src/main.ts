@@ -1,6 +1,6 @@
 import Vue from "vue"
 import App from "./App.vue"
-import store from "./store"
+import store from "./old/store"
 import {Engine} from "@babylonjs/core/Engines/engine"
 import {Scene} from "@babylonjs/core/scene"
 import {Vector3} from "@babylonjs/core/Maths/math"
@@ -11,8 +11,8 @@ import {Mesh} from "@babylonjs/core/Meshes/mesh"
 import {CellMaterial} from "@babylonjs/materials/cell"
 // Required side effects to populate the Create methods on the mesh class. Without this, the bundle would be smaller but the createXXX methods from mesh would not be accessible.
 import "@babylonjs/core/Meshes/meshBuilder"
-import {drawText} from "@/text"
-import {drawString} from "@/sdf"
+import {drawText} from "@/old/text"
+import {drawString} from "@/old/sdf"
 
 function main() {
   // Get the canvas element from the DOM.
@@ -44,11 +44,13 @@ function main() {
   // text1.sca
   let mesh = drawString("This is my text!!, isn't it awesomely clippy?!?!", scene)
   // let mesh = drawString("ab c", scene)
-  mesh.position = new Vector3(-5, 1, 0)
-  
+  mesh.position = new Vector3(-5, 1, 10)
+  let t = 1
   engine.runRenderLoop(() => {
     // shaderMaterial.setMatrix("matrix", sphere.getWorldMatrix())
     sphere.position.x = (sphere.position.x + 0.1) % 10
+    mesh.position.z = t * t
+    // t =  (t + 0.051) % 50
     scene.render()
   })
 }

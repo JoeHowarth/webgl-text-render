@@ -1,5 +1,5 @@
 import {Mesh, Scene, StandardMaterial, Texture, Vector3, VertexData} from "@babylonjs/core"
-import {initShader} from "@/text"
+import {initShader} from "@/old/text"
 
 const src = "./8x8-font.png"
 function sanityTexturedBox(scene: Scene) {

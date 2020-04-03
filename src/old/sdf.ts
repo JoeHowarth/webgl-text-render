@@ -1,8 +1,10 @@
 import {Engine, Mesh, RawTexture, Scene, ShaderMaterial, Texture, Vector3, VertexData} from "@babylonjs/core"
-import font from "./sdfFont"
+// import font from "./sdfFont"
+import font from "./sdfFont12"
 import {backgroundVertexDeclaration} from "@babylonjs/core/Shaders/ShadersInclude/backgroundVertexDeclaration"
 
-const fontTextureSrc = "font_sdf.png"
+// const fontTextureSrc = "font_sdf.png"
+const fontTextureSrc = "font_sdf_12.png"
 export function drawString(text: string, scene: Scene): Mesh {
   const material: ShaderMaterial = sdfMaterial(scene)
   let mesh = new Mesh("sdf_" + text, scene)
@@ -19,7 +21,7 @@ export function drawString(text: string, scene: Scene): Mesh {
 
 export function sdfMaterial(scene: Scene): ShaderMaterial {
   let material = initShader(scene)
-  const sdfTexture = new Texture(fontTextureSrc, scene, false, false)
+  const sdfTexture = new Texture(fontTextureSrc, scene, true, false, Texture.LINEAR_LINEAR)
   sdfTexture.onLoadObservable.add(() => {
     material.setTexture("u_texture", sdfTexture)
     console.log(material)
@@ -138,111 +140,4 @@ function initShader(scene: Scene): ShaderMaterial {
 }
 
 
-function getVertexData(text: string): VertexData {
-  let totalAdvance = 0
-  // Measure how wide the text is
-  for (var i = 0; i < text.length; i++) {
-    // @ts-ignore
-    totalAdvance += font.characters[text[i]].advance;
-  }
-  
-  // Center the text at the origin
-  // let x = -totalAdvance / 2
-  let x = 0;
-  const y = font.size / 2
-  let verticesAndUvs = []
-  const numVertices = text.length * 6;
-  let vertices = new Float32Array( numVertices * 3)
-  let uvs = new Float32Array(numVertices * 2)
-  let indices = new Uint16Array(numVertices)
-  
-  // Add a quad for each character
-  for (let i = 0; i < text.length; i++) {
-    let c = <CharacterInfo>font.characters[text[i]];
-    const vert = i * 6
-    
-    // p0 --- p1
-    // | \     |
-    // |   \   |
-    // |     \ |
-    // p2 --- p3
-    
-    var x0 = x - c.originX;
-    var y0 = y - c.originY;
-    var s0 = c.x / font.width;
-    var t0 = c.y / font.height;
-    
-    var x1 = x - c.originX + c.width;
-    var y1 = y - c.originY;
-    var s1 = (c.x + c.width) / font.width;
-    var t1 = c.y / font.height;
-    
-    var x2 = x - c.originX;
-    var y2 = y - c.originY + c.height;
-    var s2 = c.x / font.width;
-    var t2 = (c.y + c.height) / font.height;
-    
-    var x3 = x - c.originX + c.width;
-    var y3 = y - c.originY + c.height;
-    var s3 = (c.x + c.width) / font.width;
-    var t3 = (c.y + c.height) / font.height;
-    let a = vert * 3
-    vertices[a] = x0
-    vertices[a + 1] = y0
-    vertices[a + 2] = 0
-    a += 3
-    vertices[a] = x1
-    vertices[a + 1] = y1
-    vertices[a + 2] = 0
-    a += 3
-    vertices[a] = x3
-    vertices[a + 1] = y3
-    vertices[a + 2] = 0
-    a += 3
-    vertices[a] = x0
-    vertices[a + 1] = y0
-    vertices[a + 2] = 0
-    a += 3
-    vertices[a] = x3
-    vertices[a + 1] = y3
-    vertices[a + 2] = 0
-    a += 3
-    vertices[a] = x2
-    vertices[a + 1] = y2
-    vertices[a + 2] = 0
-  
-    let b = vert * 2
-    uvs[b] = s0
-    uvs[b+1] = t0
-    b += 2
-    uvs[b] = s1
-    uvs[b+1] = t1
-    b += 2
-    uvs[b] = s3
-    uvs[b+1] = t3
-    b += 2
-    uvs[b] = s0
-    uvs[b+1] = t0
-    b += 2
-    uvs[b] = s3
-    uvs[b+1] = t3
-    b += 2
-    uvs[b] = s2
-    uvs[b+1] = t2
-    
-    // verticesAndUvs.push(x0, y0, s0, t0);
-    // verticesAndUvs.push(x1, y1, s1, t1);
-    // verticesAndUvs.push(x3, y3, s3, t3);
-    //
-    // verticesAndUvs.push(x0, y0, s0, t0);
-    // verticesAndUvs.push(x3, y3, s3, t3);
-    // verticesAndUvs.push(x2, y2, s2, t2);
-    
-    x += c.advance;
-  }
-  let data = new VertexData()
-  data.positions = vertices
-  data.uvs = uvs
-  data.indices = indices
-  return data
-}
+
